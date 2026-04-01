@@ -10,7 +10,7 @@ const [name, setName] = useState("");
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
 
-  const API = "http://localhost:5000/api";
+  const API = "https://task-manager-backend-pv4b.onrender.com/";
 
  const register = async () => {
   await axios.post(`${API}/auth/register`, {
