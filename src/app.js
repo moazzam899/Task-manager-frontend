@@ -10,31 +10,44 @@ const [name, setName] = useState("");
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
 
-  // const API = "https://task-manager-backend-pv4b.onrender.com/";
-  const API = process.env.REACT_APP_API;
+  const API = "https://task-manager-backend-pv4b.onrender.com/";
+  // const API = process.env.REACT_APP_API;
 
  const register = async () => {
-  await axios.post(`${API}/auth/register`, {
-    name,
-    email,
-    password
-  });
+  try {
+    await axios.post(`${API}/auth/register`, {
+      name,
+      email,
+      password
+    });
 
-  alert("Registered");
+    alert("Registered successfully");
+
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+    alert("Register failed");
+  }
 };
 
   // LOGIN
   const login = async () => {
-  const res = await axios.post(`${API}/auth/login`, {
-    email,
-    password
-  });
+  try {
+    console.log("Login clicked");
 
-  localStorage.setItem("token", res.data.token);
-  setToken(res.data.token);
+    const res = await axios.post(`${API}/auth/login`, {
+      email,
+      password
+    });
 
-  console.log("TOKEN:", res.data.token); 
-  alert("login success");
+    localStorage.setItem("token", res.data.token);
+    setToken(res.data.token);
+
+    alert("Login success");
+
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+    alert("Login failed");
+  }
 };
 
   // GET TASKS
@@ -73,51 +86,39 @@ const [name, setName] = useState("");
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+  <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center" }}>
+    
+    <h2>Task Manager</h2>
 
-      <h2>Register</h2>
-
-<input
-  placeholder="name"
-  onChange={(e) => setName(e.target.value)}
-/>
-
-<input
-  placeholder="email"
-  onChange={(e) => setEmail(e.target.value)}
-/>
-
-<input
-  placeholder="password"
-  type="password"
-  onChange={(e) => setPassword(e.target.value)}
-/>
-
+    <h2>Register</h2>
+<input placeholder="name" onChange={(e) => setName(e.target.value)} />
+<input placeholder="email" onChange={(e) => setEmail(e.target.value)} />
+<input placeholder="password" type="password" onChange={(e) => setPassword(e.target.value)} />
 <button onClick={register}>Register</button>
 
-      <h2>Login</h2>
-      <input placeholder="email" onChange={(e) => setEmail(e.target.value)} />
-      <input placeholder="password" type="password" onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={login}>Login</button>
+    <hr />
 
-      <hr />
+    <h3>Login</h3>
+    <button onClick={login}>Login</button>
 
-      <h2>Tasks</h2>
-      <input placeholder="task title" onChange={(e) => setTitle(e.target.value)} />
-      <button onClick={createTask}>Add Task</button>
-      <button onClick={getTasks}>Load Tasks</button>
+    <hr />
 
-      <ul>
-        {tasks.map((t) => (
-          <li key={t._id}>
-            {t.title}
-            <button onClick={() => deleteTask(t._id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+    <h3>Tasks</h3>
+    <input placeholder="task title" value={title} onChange={(e) => setTitle(e.target.value)} />
+    <button onClick={createTask}>Add Task</button>
+    <button onClick={getTasks}>Load Tasks</button>
 
-    </div>
-  );
+    <ul>
+      {tasks.map((t) => (
+        <li key={t._id}>
+          {t.title}
+          <button onClick={() => deleteTask(t._id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
+
+  </div>
+);
 }
 
 export default App;
